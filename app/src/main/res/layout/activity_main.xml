@@ -6,29 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <SurfaceView
-        android:id="@+id/surfaceView"
-        android:layout_width="223dp"
-        android:layout_height="261dp"
-        tools:layout_editor_absoluteX="94dp"
-        tools:layout_editor_absoluteY="50dp" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName"
-        android:layout_width="223dp"
-        android:layout_height="57dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        tools:layout_editor_absoluteX="98dp"
-        tools:layout_editor_absoluteY="374dp" />
+    <ImageView
+        android:id="@+id/myImageView"
+        android:layout_width="313dp"
+        android:layout_height="463dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="97dp"
+        app:layout_constraintBottom_toTopOf="@+id/fab"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/snaplogo" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tilføj Tekst"
-        tools:layout_editor_absoluteX="158dp"
-        tools:layout_editor_absoluteY="538dp" />
+        android:layout_marginStart="160dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginBottom="75dp"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
