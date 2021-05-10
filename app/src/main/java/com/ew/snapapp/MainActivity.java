@@ -9,6 +9,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -16,7 +19,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         imageView.setImageBitmap(selectedImage);
+
                     }
 
                     break;
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(takePicture, 0);
 
+
                 } else if (options[item].equals("Choose from Gallery")) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto , 1);
@@ -92,5 +96,23 @@ public class MainActivity extends AppCompatActivity {
         });
         builder.show();
     }
+    // Drawing text on image:
 
+    public Bitmap drawTextToBitmap(Bitmap image, String gText) {
+        Bitmap.Config bitmapConfig = image.getConfig();
+        // set default bitmap config if none
+        if(bitmapConfig == null) {
+            bitmapConfig = Bitmap.Config.ARGB_8888;
+        }
+        // resource bitmaps are imutable,
+        // so we need to convert it to mutable one
+        image = image.copy(bitmapConfig, true);
+        Canvas canvas = new Canvas(image);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);// new antialised Paint
+        paint.setColor(Color.rgb(161, 161, 161));
+        paint.setTextSize((int) (20)); // text size in pixels
+        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE); // text shadow
+        canvas.drawText(gText, 10, 100, paint);
+        return image;
+    }
 }
