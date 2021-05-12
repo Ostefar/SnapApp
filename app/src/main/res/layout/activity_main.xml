@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFC01"
     tools:context=".MainActivity">
 
     <ImageView
@@ -13,33 +14,49 @@
         android:layout_marginStart="45dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="45dp"
-        android:layout_marginBottom="31dp"
-        app:layout_constraintBottom_toTopOf="@+id/fab2"
+        android:layout_marginBottom="81dp"
+        app:layout_constraintBottom_toTopOf="@+id/myChooseBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/snaplogo" />
 
     <Button
-        android:id="@+id/fab"
+        android:id="@+id/myChooseBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:layout_marginEnd="160dp"
-        android:layout_marginBottom="75dp"
-        android:text="Button"
+        android:layout_marginStart="60dp"
+        android:layout_marginBottom="91dp"
+        android:backgroundTint="#FDFCFC"
+        android:text="Choose"
+        android:textColor="#090909"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/fab2"
+        android:id="@+id/myDrawBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/fab"
-        tools:layout_editor_absoluteX="160dp" />
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="91dp"
+        android:backgroundTint="#FDFCFC"
+        android:text="Draw  "
+        android:textColor="#090909"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/mySendBtn"
+        app:layout_constraintStart_toEndOf="@+id/myChooseBtn" />
+
+    <Button
+        android:id="@+id/mySendBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="91dp"
+        android:backgroundTint="#FDFCFC"
+        android:text="Send"
+        android:textColor="#090909"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,6 +23,7 @@ import android.widget.ImageView;
 public class MainActivity extends AppCompatActivity {
 
     private ImageView imageView;
+    private String gText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +31,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         imageView = (ImageView) findViewById(R.id.myImageView);
-        Button fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> selectImage(MainActivity.this));
+
+        Button chooseBtn = findViewById(R.id.myChooseBtn);
+        chooseBtn.setOnClickListener(view -> selectImage(MainActivity.this));
+
+        //MIDLERTIDIG
+        Button sendBtn = findViewById(R.id.mySendBtn);
+        sendBtn.setOnClickListener(v -> goToChat());
+
+        Button drawBtn = findViewById(R.id.myDrawBtn);
+        //drawBtn.setOnClickListener(v -> drawTextToBitmap(Bitmap, gText);
+
+
 
     }
     @Override
@@ -43,9 +54,7 @@ public class MainActivity extends AppCompatActivity {
                     if (resultCode == RESULT_OK && data != null) {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         imageView.setImageBitmap(selectedImage);
-
                     }
-
                     break;
                 case 1:
                     if (resultCode == RESULT_OK && data != null) {
@@ -63,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
                                 cursor.close();
                             }
                         }
-
                     }
                     break;
             }
@@ -75,44 +83,36 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Choose your profile picture");
 
-        builder.setItems(options, new DialogInterface.OnClickListener() {
+        builder.setItems(options, (dialog, item) -> {
 
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-
-                if (options[item].equals("Take Photo")) {
-                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, 0);
+            if (options[item].equals("Take Photo")) {
+                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePicture, 0);
 
 
-                } else if (options[item].equals("Choose from Gallery")) {
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , 1);
+            } else if (options[item].equals("Choose from Gallery")) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto , 1);
 
-                } else if (options[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
+            } else if (options[item].equals("Cancel")) {
+                dialog.dismiss();
             }
         });
         builder.show();
     }
     // Drawing text on image:
 
-    public Bitmap drawTextToBitmap(Bitmap image, String gText) {
-        Bitmap.Config bitmapConfig = image.getConfig();
-        // set default bitmap config if none
-        if(bitmapConfig == null) {
-            bitmapConfig = Bitmap.Config.ARGB_8888;
-        }
-        // resource bitmaps are imutable,
-        // so we need to convert it to mutable one
-        image = image.copy(bitmapConfig, true);
-        Canvas canvas = new Canvas(image);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);// new antialised Paint
-        paint.setColor(Color.rgb(161, 161, 161));
-        paint.setTextSize((int) (20)); // text size in pixels
-        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE); // text shadow
-        canvas.drawText(gText, 10, 100, paint);
-        return image;
+    public Bitmap loadBitmapFromView(View v) {
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+        v.draw(c);
+        return b;
+    }
+
+
+    public void goToChat(){
+        Intent intent = new Intent(this, ChatActivity.class);
+        startActivity(intent);
     }
 }
