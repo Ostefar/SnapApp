@@ -4,13 +4,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,9 +19,18 @@ import android.widget.ImageView;
 
 
 public class MainActivity extends AppCompatActivity {
+    Button btnLoadImage, btnSaveImage;
+
+    final int RQS_IMAGE1 = 1;
+
+    Uri source;
+    Bitmap bitmapMaster;
+    Canvas canvasMaster;
+
+    int prvX, prvY;
+    Paint paintDraw;
 
     private ImageView imageView;
-    private String gText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +39,14 @@ public class MainActivity extends AppCompatActivity {
 
         imageView = (ImageView) findViewById(R.id.myImageView);
 
-        Button chooseBtn = findViewById(R.id.myChooseBtn);
+        Button chooseBtn = findViewById(R.id.myLoadBtn);
         chooseBtn.setOnClickListener(view -> selectImage(MainActivity.this));
 
+        
         //MIDLERTIDIG
         Button sendBtn = findViewById(R.id.mySendBtn);
         sendBtn.setOnClickListener(v -> goToChat());
 
-        Button drawBtn = findViewById(R.id.myDrawBtn);
-        //drawBtn.setOnClickListener(v -> drawTextToBitmap(Bitmap, gText);
 
 
 
@@ -99,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+    // save edited photo to firebase
+    public void saveToDb(){
+
     }
     // Drawing text on image:
 

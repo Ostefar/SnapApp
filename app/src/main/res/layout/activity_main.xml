@@ -15,37 +15,37 @@
         android:layout_marginTop="48dp"
         android:layout_marginEnd="45dp"
         android:layout_marginBottom="81dp"
-        app:layout_constraintBottom_toTopOf="@+id/myChooseBtn"
+        app:layout_constraintBottom_toTopOf="@+id/myLoadBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/snaplogo" />
 
     <Button
-        android:id="@+id/myChooseBtn"
+        android:id="@+id/myLoadBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginBottom="91dp"
         android:backgroundTint="#FDFCFC"
-        android:text="Choose"
+        android:text="Load"
         android:textColor="#090909"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/myDrawBtn"
+        android:id="@+id/mySaveBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="91dp"
         android:backgroundTint="#FDFCFC"
-        android:text="Draw  "
+        android:text="Save"
         android:textColor="#090909"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/mySendBtn"
-        app:layout_constraintStart_toEndOf="@+id/myChooseBtn" />
+        app:layout_constraintStart_toEndOf="@+id/myLoadBtn" />
 
     <Button
         android:id="@+id/mySendBtn"

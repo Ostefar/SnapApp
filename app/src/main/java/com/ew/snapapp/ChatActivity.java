@@ -20,4 +20,14 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
+    // load edited photo from firebase
+    public void loadFromDb(){
+
+    }
+
+    //delete photo from db after view (reload after?)
+    public void deleteFromDb(){
+
+    }
 }
