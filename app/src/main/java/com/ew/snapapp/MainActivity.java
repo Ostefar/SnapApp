@@ -1,62 +1,32 @@
 package com.ew.snapapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.File;
-import java.io.FileInputStream;
+import com.ew.snapapp.model.Note;
+import com.ew.snapapp.repo.Repo;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
-
-    private StorageReference mStorageRef;
-    private DatabaseReference mDatabaseRef;
-    private StorageTask mUploadTask;
-
-    private Uri mImageUri;
 
     Button btnLoadImage, btnSaveImage;
 
     private ImageView imageResult;
     private EditText imageName;
-
+    private Bitmap currentBitmap;
+    private Note currentNote;
     private ProgressDialog mProgressDialog;
 
     final int RQS_IMAGE1 = 1;
@@ -74,36 +44,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnLoadImage = (Button)findViewById(R.id.myLoadBtn);
-        btnSaveImage = (Button)findViewById(R.id.mySaveBtn);
-        imageResult = (ImageView)findViewById(R.id.myImageView);
-        imageName = (EditText) findViewById(R.id.imageName);
-        mProgressDialog = new ProgressDialog(MainActivity.this);
+        btnLoadImage = findViewById(R.id.myLoadBtn);
+        btnSaveImage = findViewById(R.id.mySaveBtn);
+        imageResult = findViewById(R.id.myImageView);
+        imageName = findViewById(R.id.imageName);
+        String noteID = getIntent().getStringExtra("noteid");
+        currentNote = Repo.r().getNoteWith(noteID);
+//        imageName.setText(currentNote.getText());
 
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        mProgressDialog = new ProgressDialog(MainActivity.this);
 
         paintDraw = new Paint();
         paintDraw.setStyle(Paint.Style.FILL);
         paintDraw.setColor(Color.WHITE);
         paintDraw.setStrokeWidth(10);
 
+        //setupAddButton();
+
+        // only navigates right now
         Button chatBtn = findViewById(R.id.myChatBtn);
         chatBtn.setOnClickListener(v -> goToChat());
 
+        // this is for opening photo library and importing image
         btnLoadImage.setOnClickListener(arg0 -> {
             Intent intent = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, RQS_IMAGE1);
         });
 
-        btnSaveImage.setOnClickListener(v -> {
-            if(bitmapMaster != null){
-                saveBitmap(bitmapMaster);
-            }
-        });
-
-
+        //touch listener for drawing - this method is very important because it makes it possible to detect
+        // the coordinates of the user touches on the screen to make it possible to draw on the imported
 
         imageResult.setOnTouchListener((v, event) -> {
 
@@ -125,18 +95,10 @@ public class MainActivity extends AppCompatActivity {
                     drawOnProjectedBitMap((ImageView) v, bitmapMaster, prvX, prvY, x, y);
                     break;
             }
-            /*
-             * Return 'true' to indicate that the event have been consumed.
-             * If auto-generated 'false', your code can detect ACTION_DOWN only,
-             * cannot detect ACTION_MOVE and ACTION_UP.
-             */
             return true;
         });
     }
-
-    /*
-    Project position on ImageView to position on Bitmap draw on it
-     */
+    //Project position on ImageView to position on Bitmap draw on it
 
     private void drawOnProjectedBitMap(ImageView iv, Bitmap bm,
                                        float x0, float y0, float x, float y){
@@ -158,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // this method is for turning the image into a canvas, which can implement the users drawing ontop of the image
+    // and save it into 1 image
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -201,40 +165,28 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    private void saveBitmap(Bitmap bm){
-        File file = Environment.getExternalStorageDirectory();
-        File newFile = new File(file, "test.jpg");
-
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(newFile);
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-            fileOutputStream.flush();
-            fileOutputStream.close();
-            Toast.makeText(MainActivity.this,
-                    "Save Bitmap: " + fileOutputStream.toString(),
-                    Toast.LENGTH_LONG).show();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(MainActivity.this,
-                    "Something wrong: " + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(MainActivity.this,
-                    "Something wrong: " + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-        }
+    public void save(View view){ // Will also update an existing note.
+        imageResult.buildDrawingCache(true);
+        currentBitmap = Bitmap.createBitmap(imageResult.getDrawingCache(true));
+        currentNote.setText(imageName.getText().toString());
+        Repo.r().updateNoteAndImage(currentNote, currentBitmap);
+        System.out.println("you pressed save");
+        System.out.println("The bitmap size: " + currentBitmap.getByteCount());
+    }
+    private void setupAddButton() {
+        btnSaveImage = findViewById(R.id.mySaveBtn);
+        btnSaveImage.setOnClickListener(e ->{
+//            items.add("New note " + items.size());
+//            myAdapter.notifyDataSetChanged(); // tell the listView to reload data
+            System.out.println("Add Btn pressed");
+            Repo.r().addNote("new note");
+        });
     }
 
-*/
-    /**
-     * customizable toast
-     * @param message
-     */
-    private void toastMessage(String message){
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
-    }
+    /*@Override
+    public void receive(byte[] bytes) {
+        // figure out, how to get the byte array to an image, and from there to the imageView
+    }*/
 
     public void goToChat(){
         Intent intent = new Intent(this, ChatActivity.class);
